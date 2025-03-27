@@ -1,59 +1,95 @@
-<h1 align="center">
-  <img src="https://i.imghippo.com/files/ILw7451YOw.png" alt="" border="0">
-  <img src="https://i.imghippo.com/files/bGEc4899hqo.png" alt="" border="0">
-  SSH-Enabled PHP Application
-</h1>
+# Web-Based SSH & WebShell Manager
+## (Apt package manager Based)
 
----
 
-<p align="center">
-  <img src="https://github.com/kaggle/spinner/raw/main/spinner.gif" width="30px">
-  <b>Secure Shell Authentication for PHP + WebShell </b>
-  <img src="https://github.com/kaggle/spinner/raw/main/spinner.gif" width="30px">
-</p>
 
----
+<div align="center">
+  <img src="https://i.imghippo.com/files/ILw7451YOw.png" style="width: 80%; max-width: 800px; border-radius: 8px; margin: 20px 0;">
+  <img src="https://i.imghippo.com/files/bGEc4899hqo.png" style="width: 80%; max-width: 800px; border-radius: 8px; margin: 20px 0;">
+</div>
 
-## 🚀 What is SSH?
+## 📊 GitHub Statistics
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=samsoncharles&theme=shadow_green&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats">
+  <img src="https://nirzak-streak-stats.vercel.app/?user=samsoncharles&theme=shadow_green&hide_border=false" alt="GitHub Streak">
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=samsoncharles&theme=shadow_green&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
+</div>
 
-**SSH (Secure Shell)** is a cryptographic network protocol that allows secure remote login and other network services over an insecure network. It enables users to interact with a remote server through a command-line interface (CLI) using encrypted communication.
+## 📚 Definitions and Technical Background
 
-### Key Features of SSH:
-- 🔐 **Encryption** ensures secure communication.
-- 👩‍💻 Allows **remote access** to servers for management.
-- 🖥️ Used by system administrators and developers for **secure system control**.
-- 🔄 **Replaces older protocols** like Telnet and rlogin.
+### What is a WebShell?
+A WebShell is a script-based web interface that enables remote system administration through a browser. Key characteristics:
 
----
+- **Frontend**: HTML/CSS/JavaScript interface
+- **Backend**: PHP/Python/Node.js command execution
+- **Protocol**: Typically HTTP/HTTPS
+- **Versions**:
+  - PHP WebShell (most common)
+  - JSP WebShell (Java environments)
+  - ASPX WebShell (Windows servers)
+  - Python WebShell (WSGI implementations)
 
-## 📜 Requirements
+### What is SSH?
+Secure Shell (SSH) is the standard for secure remote access:
 
-To run the SSH-enabled PHP application, you need the following:
+- **Protocol Versions**:
+  - SSH-1 (legacy, insecure)
+  - SSH-2 (current standard)
+- **Common Implementations**:
+  - OpenSSH (most widely used)
+  - Dropbear (embedded systems)
+  - Tectia (commercial solution)
 
-### 1. **Apache2 Web Server** 
-   - Apache2 is a powerful HTTP server used to serve web pages.
-   - It will host our PHP scripts and handle incoming requests.
-   
-### 2. **PHP 7.4+**
-   - PHP is a server-side scripting language that runs the backend logic for the application.
-   
-### 3. **OpenSSH Server and Client**
-   - OpenSSH is the suite used to manage secure shell sessions.
+## ⚠️ Critical Disclaimer
+**This project is for educational and authorized administrative use only.** By using this software, you agree that:
 
----
+1. You will only install on systems you own or have explicit permission to manage
+2. You understand the legal implications of unauthorized access
+3. You accept all responsibility for your use of this tool
 
-## 📥 Installation
+## 🌟 Project Overview
+This PHP-based solution combines WebShell and SSH functionality with:
 
-### **For APT Package Manager (Debian/Ubuntu)**
-The installation works perfectly with `apt` package manager. Here's how to install:
+✔ Browser-based SSH terminal  
+✔ WebShell command execution  
+✔ System monitoring dashboard  
+✔ Package management interface  
+✔ Multi-user capability (when properly configured)
 
-```sh
-sudo apt update
-sudo apt install apache2 php openssh-server git -y
-sudo git clone https://github.com/samsoncharles/sshConnect_PHP.git
+## 🛠️ Technical Specifications
+
+| Component           | Implementation Details                  |
+|---------------------|----------------------------------------|
+| Core Language       | PHP 7.4+ with secure execution wrapper |
+| Web Server          | Apache 2.4+/Nginx 1.18+                |
+| Database            | SQLite3 (optional)                     |
+| Frontend Framework  | Bootstrap 5.1 + Terminal.js            |
+| Security Layers     | Input sanitization, command whitelisting|
+## 📦 Complete Installation Guide
+
+### Prerequisites
+- Linux system with APT package manager
+- PHP 7.4+ with required extensions
+- Apache/Nginx web server
+- Git client
+
+### Installation Steps
+```bash
+# Clone repository with submodules
+sudo git clone --recursive https://github.com/samsoncharles/sshConnect_PHP.git
+
+# Set executable permissions
 sudo chmod +x sshConnect_PHP/requirements.sh
-sudo ./sshConnect_PHP/requirements.sh
-sudo mkdir /var/www/html/sshConnect_PHP
-sudo cp sshConnect_PHP/* /var/www/html/sshConnect_PHP
-sudo chmod 777 /var/www/html/sshConnect_PHP/*
-firefox localhost/sshConnect_PHP/index.php
+
+# Run installation (auto-detects dependencies)
+sudo ./sshConnect_PHP/install.sh
+
+# Directories Setup:
+sudo mkdir -p /var/www/html/sshConnect_PHP
+sudo cp -r sshConnect_PHP/* /var/www/html/sshConnect_PHP/
+sudo chown -R www-data:www-data /var/www/html/sshConnect_PHP
+sudo chmod -R 750 /var/www/html/sshConnect_PHP
+
+# Start service
+sudo systemctl restart apache2
+firefox localhost/sshConnect_PHP
