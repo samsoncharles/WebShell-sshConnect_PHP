@@ -52,4 +52,5 @@ sudo chmod +x sshConnect_PHP/requirements.sh
 sudo ./sshConnect_PHP/requirements.sh
 sudo mkdir /var/www/html/sshConnect_PHP
 sudo cp sshConnect_PHP/* /var/www/html/sshConnect_PHP
+sudo chmod 777 /var/www/html/sshConnect_PHP/*
 firefox localhost/sshConnect_PHP/index.php
