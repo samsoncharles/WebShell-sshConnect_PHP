@@ -1,140 +1,111 @@
 #!/bin/bash
-# install.sh - SSH-Enabled PHP Web Application Installer with Visual Effects
+# install.sh - SSH/PHP Installer with Password Authentication
 
 # Colors
-RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Animation functions
-function animate_loading() {
-  local chars="/-\|"
-  while :; do
-    for (( i=0; i<${#chars}; i++ )); do
-      sleep 0.1
-      echo -en "${BLUE}[${chars:$i:1}] ${1}${NC}\r"
-    done
-  done
+# Variables
+INSTALL_USER=$(whoami)
+SERVER_IP=$(hostname -I | awk '{print $1}')
+APP_DIR="sshConnect_PHP"
+APP_URL="http://$SERVER_IP/$APP_DIR"
+
+function show_header() {
+  echo -e "${BLUE}"
+  echo "SSH-Enabled PHP Web Application Installer"
+  echo -e "${NC}"
 }
 
-function show_banner() {
-  clear
-  echo -e "${GREEN}"
-  echo "   _____ _____ _____   _______ _______ _______ _______ "
-  echo "  |   __|     |     |_|   |  |    ___|     __|    |  |"
-  echo "  |__   |  |  |       |       |    ___|__     |       |"
-  echo "  |_____|_____|_______|__|_|__|_______|_______|__|____|"
-  echo -e "${NC}"
-  echo -e "${YELLOW}⚡ Secure PHP Web App with SSH Authentication${NC}"
-  echo -e "${CYAN}------------------------------------------------${NC}"
+function run_with_progress() {
+  echo -n "[ ] $1..."
+  $2 > /dev/null 2>&1 &
+  local pid=$!
+  
+  local spin='-\|/'
+  local i=0
+  while kill -0 $pid 2>/dev/null; do
+    i=$(( (i+1) %4 ))
+    printf "\r[${spin:$i:1}]"
+    sleep 0.1
+  done
+  
+  wait $pid
+  if [ $? -eq 0 ]; then
+    printf "\r[✓] $1\n"
+  else
+    printf "\r[✗] $1\n"
+  fi
+}
+
+function configure_ssh() {
+  # Ensure password authentication is enabled
+  run_with_progress "Configuring SSH" "
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    sed -i 's/PasswordAuthentication no/#PasswordAuthentication no/' /etc/ssh/sshd_config
+    systemctl restart ssh
+  "
 }
 
 function install_packages() {
-  echo -e "${GREEN}[+] Installing required packages...${NC}"
-  
-  # Start loading animation
-  animate_loading "Updating package list" &
-  ANIM_PID=$!
-  disown
-  
-  # Actual commands
-  apt-get update -qq > /dev/null 2>&1
-  
-  # Stop animation
-  kill $ANIM_PID > /dev/null 2>&1
-  echo -e "\r${GREEN}[✓] Package list updated${NC}"
-  
-  # Main packages
-  pkgs=("apache2" "php" "libapache2-mod-php" "php-cli" "php-curl" 
-        "php-mbstring" "php-xml" "php-zip" "openssh-server" "lolcat" "figlet")
-        
+  local pkgs=(
+    "apache2"
+    "php"
+    "libapache2-mod-php" 
+    "php-cli"
+    "php-curl"
+    "php-mbstring"
+    "php-xml"
+    "php-zip"
+    "openssh-server"
+  )
+
   for pkg in "${pkgs[@]}"; do
-    echo -ne "${BLUE}[•] Installing ${pkg}...${NC}\r"
-    apt-get install -y -qq "$pkg" > /dev/null 2>&1
-    echo -e "\r${GREEN}[✓] Installed ${pkg}${NC}"
+    run_with_progress "Installing $pkg" "apt-get install -y -qq $pkg"
   done
 }
 
-function configure_services() {
-  echo -e "\n${GREEN}[+] Configuring services...${NC}"
-  
-  # Enable services
-  systemctl enable apache2 ssh > /dev/null 2>&1
-  
-  # Configure firewall
-  echo -ne "${BLUE}[•] Configuring firewall...${NC}\r"
-  ufw allow 22/tcp > /dev/null 2>&1
-  ufw allow 80/tcp > /dev/null 2>&1
-  echo "y" | ufw enable > /dev/null 2>&1
-  echo -e "\r${GREEN}[✓] Firewall configured${NC}"
-  
-  # Add SSH effects
-  echo -e "\n${CYAN}[+] Adding SSH Visual Effects${NC}"
-  cat > /etc/ssh/sshd_effects.conf << 'EOL'
-# SSH Effects Configuration
-[effects]
-login_animation = matrix
-color_scheme = hacker
-welcome_message = "Access Granted %u"
-motd = """
-  ███████╗███████╗██╗  ██╗
-  ██╔════╝██╔════╝██║  ██║
-  ███████╗███████╗███████║
-  ╚════██║╚════██║██╔══██║
-  ███████║███████║██║  ██║
-  ╚══════╝╚══════╝╚═╝  ╚═╝
-"""
-EOL
-
-  # Add to sshd_config
-  echo -e "Include /etc/ssh/sshd_effects.conf" >> /etc/ssh/sshd_config
-}
-
 function setup_app() {
-  echo -e "\n${GREEN}[+] Setting up application...${NC}"
-  mkdir -p /var/www/html/secure_app
-  chown -R www-data:www-data /var/www/html/secure_app
-  chmod 750 /var/www/html/secure_app
-  
-  # Create sample PHP auth page
-  cat > /var/www/html/secure_app/index.php << 'EOL'
+  run_with_progress "Deploying web app" "
+    mkdir -p /var/www/html/$APP_DIR
+    chown -R www-data:www-data /var/www/html/$APP_DIR
+    chmod 750 /var/www/html/$APP_DIR
+    
+    cat > /var/www/html/$APP_DIR/index.php << 'EOL'
 <?php
-// SSH-Protected PHP App
-echo "<!DOCTYPE html><html><head><title>SSH-Protected App</title>";
-echo "<style>body {background: #121212; color: #0f0; font-family: monospace;}</style>";
-echo "</head><body>";
-echo "<h1 style='text-align:center;color:#9FEF00'>⚡ SSH-Authenticated Portal ⚡</h1>";
-echo "<div style='border:1px solid #333;padding:20px;margin:20px auto;width:80%;'>";
-echo "<p>Welcome ".htmlspecialchars($_SERVER['REMOTE_USER'])."!</p>";
-echo "<p>Your session is SSH-secured.</p>";
-echo "</div></body></html>";
+echo '<!DOCTYPE html><html><head><title>SSH Portal</title>';
+echo '<style>body {background: #f5f5f5; font-family: sans-serif;}</style>';
+echo '</head><body>';
+echo '<div style=\"max-width:500px;margin:50px auto;padding:20px;background:#fff;border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,0.1)\">';
+echo '<h2 style=\"color:#333;text-align:center\">SSH Authentication Portal</h2>';
+if (isset(\$_SERVER['REMOTE_USER'])) {
+    echo '<p style=\"color:#4CAF50\">Welcome '.htmlspecialchars(\$_SERVER['REMOTE_USER']).'</p>';
+} else {
+    echo '<p style=\"color:#F44336\">Please authenticate via SSH first</p>';
+}
+echo '</div></body></html>';
 ?>
 EOL
-}
-
-function restart_services() {
-  echo -e "\n${GREEN}[+] Restarting services...${NC}"
-  systemctl restart apache2 ssh
+  "
 }
 
 function show_completion() {
-  echo -e "\n${GREEN}"
-  figlet "INSTALLATION COMPLETE!" | lolcat
-  echo -e "${NC}"
-  echo -e "${CYAN}------------------------------------------------${NC}"
-  echo -e "${YELLOW}🚀 Application URL: http://$(hostname -I | awk '{print $1}')/secure_app${NC}"
-  echo -e "${YELLOW}🔑 SSH Access: ssh $(whoami)@$(hostname -I | awk '{print $1}')${NC}"
-  echo -e "${CYAN}------------------------------------------------${NC}"
-  echo -e "${BLUE}ℹ️  Connect via SSH first to authenticate, then access the web UI${NC}"
+  echo -e "\n${GREEN}✔ Installation Complete${NC}"
+  echo -e "${BLUE}──────────────────────────────────────${NC}"
+  echo -e "Access the application at: ${YELLOW}$APP_URL${NC}"
+  echo -e "For testing, enable ssh_server by...
+  echo -e "--> sudo systemctl start ssh --> sudo systemctl enable ssh"
+  echo -e "Use your current system passwordm ip and userbame to see if it works using the link above"
+  echo -e "${BLUE}──────────────────────────────────────${NC}"
 }
 
 # Main execution
-show_banner
+show_header
+run_with_progress "Updating packages" "apt-get update -qq"
+configure_ssh
 install_packages
-configure_services
 setup_app
-restart_services
+run_with_progress "Starting services" "systemctl restart apache2"
 show_completion
