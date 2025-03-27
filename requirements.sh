@@ -95,8 +95,17 @@ function show_completion() {
   echo -e "\n${GREEN}✔ Installation Complete${NC}"
   echo -e "${BLUE}──────────────────────────────────────${NC}"
   echo -e "Access the application at: ${YELLOW}$APP_URL${NC}"
-  echo -e "For testing, enable ssh_server by..."
-  echo -e "--> sudo systemctl start ssh --> sudo systemctl enable ssh"
-  echo -e "Use your current system passwordm ip and userbame to see if it works using the link above"
+  echo -e "Login via SSH with: ${YELLOW}ssh $INSTALL_USER@$SERVER_IP${NC}"
+  echo -e "Use your current system password"
   echo -e "${BLUE}──────────────────────────────────────${NC}"
 }
+
+# Main execution
+show_header
+run_with_progress "Updating packages" "apt-get update -qq"
+configure_ssh
+install_packages
+setup_app
+run_with_progress "Starting services" "systemctl restart apache2"
+show_completion
+                 
