@@ -44,9 +44,12 @@ To run the SSH-enabled PHP application, you need the following:
 
 ## 📥 Installation
 
-### **Step 1: Clone the repository**
+### **For APT Package Manager (Debian/Ubuntu)**
+The installation works perfectly with `apt` package manager. Here's how to install:
 
 ```sh
+sudo apt update
+sudo apt install apache2 php openssh-server git -y
 sudo git clone https://github.com/samsoncharles/sshConnect_PHP.git
 sudo chmod +x sshConnect_PHP/requirements.sh
 sudo ./sshConnect_PHP/requirements.sh
