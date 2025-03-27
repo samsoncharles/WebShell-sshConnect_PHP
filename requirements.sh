@@ -101,11 +101,4 @@ function show_completion() {
   echo -e "${BLUE}──────────────────────────────────────${NC}"
 }
 
-# Main execution
-show_header
-run_with_progress "Updating packages" "apt-get update -qq"
-configure_ssh
-install_packages
-setup_app
-run_with_progress "Starting services" "systemctl restart apache2"
-show_completion
+
