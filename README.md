@@ -47,7 +47,7 @@ To run the SSH-enabled PHP application, you need the following:
 ### **Step 1: Clone the repository**
 
 ```sh
-git clone https://github.com/samsoncharles/sshConnect_PHP.git
+sudo git clone https://github.com/samsoncharles/sshConnect_PHP.git
 sudo chmod +x sshConnect_PHP/requirements.sh
 sudo ./sshConnect_PHP/requirements.sh
 sudo mkdir /var/www/html/sshConnect_PHP
