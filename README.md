@@ -82,7 +82,7 @@ sudo git clone --recursive https://github.com/samsoncharles/sshConnect_PHP.git
 sudo chmod +x sshConnect_PHP/requirements.sh
 
 # Run installation (auto-detects dependencies)
-sudo ./sshConnect_PHP/install.sh
+sudo ./sshConnect_PHP/requirements.sh
 
 # Directories Setup:
 sudo mkdir -p /var/www/html/sshConnect_PHP
