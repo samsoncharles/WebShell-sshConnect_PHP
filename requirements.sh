@@ -100,5 +100,3 @@ function show_completion() {
   echo -e "Use your current system passwordm ip and userbame to see if it works using the link above"
   echo -e "${BLUE}──────────────────────────────────────${NC}"
 }
-
-
