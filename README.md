@@ -48,9 +48,8 @@ To run the SSH-enabled PHP application, you need the following:
 
 ```sh
 git clone https://github.com/samsoncharles/sshConnect_PHP.git
-cd sshConnect_PHP
-sudo ./requirements.sh
-
-
-sudo cp -r ../sshConnect_PHP /var/www/html
-firefox localhost/index.php
+sudo chmod +x sshConnect_PHP/requirements.sh
+sudo ./sshConnect_PHP/requirements.sh
+sudo mkdir /var/www/html/sshConnect_PHP
+sudo cp sshConnect_PHP/* /var/www/html/sshConnect_PHP
+firefox localhost/sshConnect_PHP/index.php
