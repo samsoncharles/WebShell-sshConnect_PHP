@@ -95,7 +95,7 @@ function show_completion() {
   echo -e "\n${GREEN}✔ Installation Complete${NC}"
   echo -e "${BLUE}──────────────────────────────────────${NC}"
   echo -e "Access the application at: ${YELLOW}$APP_URL${NC}"
-  echo -e "For testing, enable ssh_server by...
+  echo -e "For testing, enable ssh_server by..."
   echo -e "--> sudo systemctl start ssh --> sudo systemctl enable ssh"
   echo -e "Use your current system passwordm ip and userbame to see if it works using the link above"
   echo -e "${BLUE}──────────────────────────────────────${NC}"
