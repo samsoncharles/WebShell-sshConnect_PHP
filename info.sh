@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the directory where the SSH2 extension is located
-SSH2_DIR="$HOME/Desktop/ssh2-1.4.1"
+SSH2_DIR="$(pwd)/sshConnect_PHP/ssh2-1.4.1"
 
 # Ensure the directory exists
 if [ ! -d "$SSH2_DIR" ]; then
