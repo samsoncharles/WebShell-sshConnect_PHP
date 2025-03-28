@@ -79,16 +79,19 @@ This PHP-based solution combines WebShell and SSH functionality with:
 sudo git clone --recursive https://github.com/samsoncharles/sshConnect_PHP.git
 
 # Set executable permissions
+sudo chmod +x info.sh
 sudo chmod +x sshConnect_PHP/requirements.sh
 
 # Run installation (auto-detects dependencies)
+sudo ./info.sh
 sudo ./sshConnect_PHP/requirements.sh
+sudo ./info.sh
 
 # Directories Setup:
 sudo mkdir -p /var/www/html/sshConnect_PHP
 sudo cp -r sshConnect_PHP/* /var/www/html/sshConnect_PHP/
 sudo chown -R www-data:www-data /var/www/html/sshConnect_PHP
-sudo chmod -R 750 /var/www/html/sshConnect_PHP
+sudo chmod -R 777 /var/www/html/sshConnect_PHP
 
 # Start service
 sudo systemctl restart apache2
