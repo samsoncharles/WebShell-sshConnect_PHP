@@ -85,7 +85,6 @@ sudo chmod +x sshConnect_PHP/requirements.sh
 # Run installation (auto-detects dependencies)
 sudo ./info.sh
 sudo ./sshConnect_PHP/requirements.sh
-sudo ./info.sh
 
 # Directories Setup:
 sudo mkdir -p /var/www/html/sshConnect_PHP
