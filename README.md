@@ -79,11 +79,11 @@ This PHP-based solution combines WebShell and SSH functionality with:
 sudo git clone --recursive https://github.com/samsoncharles/sshConnect_PHP.git
 
 # Set executable permissions
-sudo chmod +x info.sh
+sudo chmod +x sshConnect_PHP/info.sh
 sudo chmod +x sshConnect_PHP/requirements.sh
 
 # Run installation (auto-detects dependencies)
-sudo ./info.sh
+sudo ./sshConnect_PHP/info.sh
 sudo ./sshConnect_PHP/requirements.sh
 
 # Directories Setup:
