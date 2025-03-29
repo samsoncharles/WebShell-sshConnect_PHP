@@ -1,4 +1,52 @@
 #!/bin/bash
+
+echo "Updating packages..."
+sudo apt update -y
+# Function to display the progress animation
+loading_animation() {
+    spin='|/-\'
+    while true; do
+        for i in `seq 0 3`; do
+            echo -ne "\r[Installing...] ${spin:$i:1}   "
+            sleep 0.1
+        done
+    done
+}
+
+# Function to stop the loading animation
+stop_loading_animation() {
+    echo -ne "\r[Done] Successfully Installed Dependencies.     \n"
+}
+
+# Start the animation in the background
+loading_animation &
+loading_pid=$!
+
+# Install required packages
+
+echo "Installing required packages..."
+sudo apt install -y php-pear php-dev make gcc libssh2-1-dev
+
+# Stop the loading animation once installation is complete
+kill $loading_pid
+
+# Install ssh2 PHP extension
+echo "Installing SSH2 PHP extension..."
+sudo pecl install ssh2
+
+# Enable ssh2 extension
+echo "Enabling ssh2 PHP extension..."
+echo "extension=ssh2.so" | sudo tee -a /etc/php/$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;")/cli/php.ini
+
+# Check if the installation was successful
+if php -m | grep -q ssh2; then
+    echo "SSH2 extension successfully installed and enabled!"
+else
+    echo "Error: SSH2 extension installation failed."
+fi
+
+echo "Installation complete."
+
 # Displaying the "hacker" theme intro
 echo "────────────────────────────────────────────────"
 echo "       Welcome to the Automated Setup Script"
@@ -7,9 +55,6 @@ echo "────────────────────────�
 echo "    [*] Preparing to unleash the power..."
 sleep 1
 
-# Step 1: Update and upgrade the system
-echo "[+] Updating package lists..."
-sudo apt update -y && sudo apt upgrade -y
 
 # Step 2: Install Apache2
 echo "[+] Installing Apache2 web server..."
@@ -59,9 +104,6 @@ if [ ! -d "$SSH2_DIR" ]; then
     echo "Error: Directory $SSH2_DIR does not exist. Make sure the SSH2 source is extracted."
     exit 1
 fi
-
-# Update package lists
-sudo apt update
 
 # Install necessary dependencies
 sudo apt install -y php-dev libssh2-1-dev libssh2-1 autoconf make gcc phpize
